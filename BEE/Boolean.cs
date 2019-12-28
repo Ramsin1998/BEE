@@ -14,10 +14,10 @@ namespace BEE
         {
             Boolean.variables = variables;
 
-            return evaluate(string.Join("", expression.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries)));
+            return evaluate(expression.removeWhiteSpace());
         }
-        //don't make table.
-        public static char[] IdentifyVariables(string expression) => String.Join("", expression.Split('(', ')', '+', '\'', ' ')).Distinct().ToArray();
+
+        public static char[] IdentifyVariables(string expression) => string.Join("", expression.Split('(', ')', '+', '\'', ' ')).Distinct().ToArray();
 
         private static bool evaluate(string expression)
         {
@@ -30,7 +30,8 @@ namespace BEE
                     return !isolateProducts(expression).Any(e => !evaluate(e));
 
                 case Instruction.Unbox:
-                    return evaluate(unbox(expression));
+                    int negations = expression.countLast();
+                    return negations % 2 == 0 ? evaluate(unbox(expression, negations)) : !evaluate(unbox(expression, negations));
             }
 
             return evaluateVariable(expression);
@@ -58,7 +59,7 @@ namespace BEE
                     return Instruction.IsolateTerms;
             }
 
-            if (expression[0] == '(' && subExpressions == 1 && expression.Last(c => c != '\'') == ')')
+            if (subExpressions == 1 && expression[0] == '(' && expression.Last(c => c != '\'') == ')')
                 return Instruction.Unbox;
 
             if (expression.Where(c => c != '\'').Count() == 1)
@@ -69,22 +70,37 @@ namespace BEE
 
         private static string[] isolateTerms(string expression)
         {
+            List<string> terms = new List<string>();
+            int startingIndex = 0;
+            int insideParentheses = 0;
 
-        }
+            for (int i = 0; i < expression.Length; i++)
+            {
+                if (expression[i] == '(')
+                    insideParentheses++;
+
+                else if (expression[i] == ')')
+                    insideParentheses--;
+
+                if (insideParentheses == 0 && expression[i] == '+')
+                {
+                    terms.Add(expression.Substring(startingIndex, i - startingIndex));
+                    startingIndex = i + 1;
+                }
+            }
+
+            terms.Add(expression.Substring(startingIndex, expression.Length - startingIndex));
+
+            return terms.ToArray();
+        } //012345+789+e
 
         private static string[] isolateProducts(string expression)
         {
-
+            return default;
         }
+        
+        private static string unbox(string expression, int negations) => expression.Substring(1, expression.Length - (negations + 2));
 
-        private static string unbox(string expression)
-        {
-
-        }
-
-        private static bool evaluateVariable(string variable)
-        {
-
-        }
+        private static bool evaluateVariable(string expression) => expression.countLast('\'') % 2 == 0 ? variables[expression[0]] : !variables[expression[0]];
     }
 }

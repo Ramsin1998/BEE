@@ -12,14 +12,14 @@ namespace BEE
         {
             while (true)
             {
-                //string text = Console.ReadLine();
-                //Dictionary<char, bool> variables = new Dictionary<char, bool>();
-                //foreach (char c in Boolean.IdentifyVariables(text))
-                //    variables.Add(c, true);
+                string text = Console.ReadLine();
+                Dictionary<char, bool> variables = new Dictionary<char, bool>();
+                foreach (char c in Boolean.IdentifyVariables(text))
+                    variables.Add(c, true);
 
-                //Console.WriteLine(Boolean.Solve(text, variables));
+                Console.WriteLine(Boolean.Solve(text, variables));
 
-                //Boolean.isolateTerms(Console.ReadLine()).ToList().ForEach(Console.WriteLine);
+                //Boolean.isolateProducts(Console.ReadLine()).ToList().ForEach(Console.WriteLine);
 
                 Console.WriteLine();
             }

@@ -68,11 +68,12 @@ namespace BEE
             return Instruction.IsolateProducts;
         }
 
-        private static string[] isolateTerms(string expression)
+        private static List<string> isolateTerms(string expression)
         {
             List<string> terms = new List<string>();
             int startingIndex = 0;
             int insideParentheses = 0;
+            expression += '+';
 
             for (int i = 0; i < expression.Length; i++)
             {
@@ -89,14 +90,33 @@ namespace BEE
                 }
             }
 
-            terms.Add(expression.Substring(startingIndex, expression.Length - startingIndex));
+            //terms.Add(expression.Substring(startingIndex, expression.Length - startingIndex));
 
-            return terms.ToArray();
-        } //012345+789+e
+            return terms;
+        }
 
-        private static string[] isolateProducts(string expression)
+        private static List<string> isolateProducts(string expression)
         {
-            return default;
+            List<string> products = new List<string>();
+            int startingIndex = expression.Length - 1;
+            int insideParentheses = 0;
+
+            for (int i = expression.Length - 1; i >= 0; i--)
+            {
+                if (expression[i] == ')')
+                    insideParentheses++;
+
+                else if (expression[i] == '(')
+                    insideParentheses--;
+
+                if (insideParentheses > 0 || expression[i] == '\'')
+                    continue;
+
+                products.Add(expression.Substring(i, (startingIndex - i) + 1));
+                startingIndex = i - 1;
+            }
+
+            return products;
         }
         
         private static string unbox(string expression, int negations) => expression.Substring(1, expression.Length - (negations + 2));

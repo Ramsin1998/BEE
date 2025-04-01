@@ -13,7 +13,7 @@ namespace BEE
         public static int countLast(this string text)
         {
             char c = text.Last();
-            int count = 1;
+            int count = 0; 
 
             for (int i = text.Length - 2; i >= 0; i--)
             {

@@ -30,7 +30,7 @@ namespace BEE
                     return !isolateProducts(expression).Any(e => !evaluate(e));
 
                 case Instruction.Unbox:
-                    int negations = expression.countLast();
+                    int negations = expression.countLast('\'');
                     return negations % 2 == 0 ? evaluate(unbox(expression, negations)) : !evaluate(unbox(expression, negations));
             }
 
